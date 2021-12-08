@@ -1,12 +1,28 @@
-import { createStore } from 'vuex'
+import User from '@/api/entities/User'
+import { createStore, Store } from 'vuex'
+
+declare module '@vue/runtime-core' {
+  interface State {
+    user: User
+  }
+
+  interface ComponentCustomProperties {
+    $store: Store<State>
+  }
+}
 
 export default createStore({
-  state: {
+  state() {
+    return {
+      user: {},
+    }
   },
-  mutations: {
+  getters: {
+    getUsername(): string {
+      return 'Loane'
+    },
   },
-  actions: {
-  },
-  modules: {
-  }
+  mutations: {},
+  actions: {},
+  modules: {},
 })
