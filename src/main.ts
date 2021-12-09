@@ -2,26 +2,18 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import upperFirst from 'lodash/upperFirst'
-import camelCase from 'lodash/camelCase'
 import './index.css'
-
-const requireComponent = require.context(
-  './components/form',
-  false,
-  /App[A-Z]\w+\.(vue|js)$/,
-)
+import { Http } from '@/api/connector/Http'
+import { RequireComponents as RequireFormComponents } from '@/services/form/RequireComponents'
 
 const app = createApp(App)
 
-requireComponent.keys().forEach((fileName) => {
-  const componentConfig = requireComponent(fileName)
+// Global http client service
+app.config.globalProperties.$http = Http
 
-  const componentName = upperFirst(
-    camelCase(fileName.replace(/^\.\/(.*)\.\w+$/, '$1')),
-  )
-
-  app.component(componentName, componentConfig.default || componentConfig)
+// Lazy import of form components
+RequireFormComponents().forEach((component) => {
+  app.component(component.name, component.config)
 })
 
 app.use(store).use(router).mount('#app')
