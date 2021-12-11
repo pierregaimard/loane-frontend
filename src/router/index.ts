@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import store from '@/store/index'
 
+import Main from '../views/Main.vue'
 import Home from '../views/Home.vue'
 import Login from '@/views/security/Login.vue'
 import SignIn from '@/views/security/SignIn.vue'
@@ -24,14 +25,21 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: '/home',
-    name: 'Home',
-    component: Home,
-  },
-  {
-    path: '/articles',
-    name: 'Articles',
-    component: Articles,
+    path: '/',
+    name: 'Main',
+    component: Main,
+    children: [
+      {
+        path: 'home',
+        name: 'Home',
+        component: Home,
+      },
+      {
+        path: 'articles',
+        name: 'Articles',
+        component: Articles,
+      },
+    ],
   },
 ]
 
