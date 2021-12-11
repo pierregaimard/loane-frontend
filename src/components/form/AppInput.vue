@@ -19,7 +19,7 @@
       :aria-invalid="error ? true : null"
       :placeholder="label"
       :class="inputStyle"
-    />
+    >
     <AppFieldError
       :id="errorId"
       :error="error"
@@ -108,5 +108,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style scoped></style>
