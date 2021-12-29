@@ -5,7 +5,7 @@ import Main from '../views/Main.vue'
 import Home from '../views/Home.vue'
 import Login from '@/views/security/Login.vue'
 import SignIn from '@/views/security/SignIn.vue'
-import Articles from '@/views/Articles.vue'
+import Articles from '@/views/articles/Articles.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
