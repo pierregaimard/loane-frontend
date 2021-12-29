@@ -1,7 +1,7 @@
 <template>
   <Navbar />
 
-  <router-view class="py-36 px-6" />
+  <router-view class="py-40 px-6" />
 </template>
 
 <script lang="ts">
