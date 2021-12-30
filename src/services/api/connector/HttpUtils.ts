@@ -1,4 +1,4 @@
-import { HttpUtilsInterface } from '@/api/connector/HttpUtilsInterface'
+import { HttpUtilsInterface } from '@/services/api/connector/HttpUtilsInterface'
 import { AxiosInstance } from 'axios'
 
 export default class HttpUtils implements HttpUtilsInterface {

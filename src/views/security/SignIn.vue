@@ -116,7 +116,7 @@ import { object, string } from 'yup'
 import { ref } from '@vue/reactivity'
 import { ExclamationIcon } from '@heroicons/vue/solid'
 import { defineComponent } from 'vue'
-import { Http } from '@/api/connector/Http'
+import { Http } from '@/services/api/connector/Http'
 
 export default defineComponent({
   components: { ExclamationIcon },
