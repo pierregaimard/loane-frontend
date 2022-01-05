@@ -2,7 +2,7 @@ import { ClientInterface } from '@/services/api/client/ClientInterface'
 import { ClientRequestOptionsInterface } from '@/services/api/request/ClientRequestOptionsInterface'
 import { ClientResponseInterface } from '@/services/api/response/ClientResponseInterface'
 import { ClientErrorResponse } from '@/services/api/response/ClientErrorResponse'
-import { ClientUnauthorizedErrorResponse } from '@/services/api/response/ClientUnauthorizedErrorResponse'
+import { ClientUnauthorizedResponse } from '@/services/api/response/ClientUnauthorizedResponse'
 import { ClientErrorInterface } from '@/services/api/error/ClientErrorInterface'
 import { ClientNetworkError } from '@/services/api/error/ClientNetworkError'
 
@@ -105,7 +105,7 @@ export class Client {
 
   private static getResponseError(error: ClientResponseInterface): ClientResponseInterface {
     if (error.status === 401) {
-      return new ClientUnauthorizedErrorResponse(error)
+      return new ClientUnauthorizedResponse(error)
     }
 
     return error
