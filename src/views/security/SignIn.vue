@@ -116,7 +116,8 @@ import { object, string } from 'yup'
 import { ref } from '@vue/reactivity'
 import { ExclamationIcon } from '@heroicons/vue/solid'
 import { defineComponent } from 'vue'
-import { Http } from '@/services/api/connector/Http'
+import { UserManager } from '@/services/api/managers/UserManager'
+import User from '@/services/api/entities/User'
 
 export default defineComponent({
   components: { ExclamationIcon },
@@ -148,7 +149,7 @@ export default defineComponent({
 
     const submit = handleSubmit(async function (values) {
       try {
-        await Http.getClient().post('auth/sign-in', values)
+        await UserManager.signIn(values)
         await router.push({ name: 'Login' })
       } catch (err) {
         errorMessage.value = err.response.data.message
