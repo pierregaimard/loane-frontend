@@ -3,8 +3,8 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import './index.css'
-import { Http } from '@/api/connector/Http'
 import { RequireComponents as RequireFormComponents } from '@/services/form/RequireComponents'
+import { Http } from '@/services/api/client/Http'
 
 const app = createApp(App)
 
