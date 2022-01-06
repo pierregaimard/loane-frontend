@@ -9,19 +9,19 @@ export interface ClientInterface {
 
   post(
     url: string,
-    data?: Record<string, unknown>,
+    data?: any,
     options?: ClientRequestOptionsInterface
   ): Promise<ClientResponseInterface>
 
   put(
     url: string,
-    data?: Record<string, unknown>,
+    data?: any,
     options?: ClientRequestOptionsInterface
   ): Promise<ClientResponseInterface>
 
   patch(
     url: string,
-    data?: Record<string, unknown>,
+    data?: any,
     options?: ClientRequestOptionsInterface
   ): Promise<ClientResponseInterface>
 

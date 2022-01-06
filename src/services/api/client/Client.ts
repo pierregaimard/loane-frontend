@@ -30,7 +30,7 @@ export class Client {
 
   public async post(
     url: string,
-    data?: Record<string, unknown>,
+    data?: any,
     options?: ClientRequestOptionsInterface,
   ): Promise<ClientResponseInterface> {
     try {
@@ -46,7 +46,7 @@ export class Client {
 
   public async put(
     url: string,
-    data?: Record<string, unknown>,
+    data?: any,
     options?: ClientRequestOptionsInterface,
   ): Promise<ClientResponseInterface> {
     try {
@@ -62,7 +62,7 @@ export class Client {
 
   public async patch(
     url: string,
-    data?: Record<string, unknown>,
+    data?: any,
     options?: ClientRequestOptionsInterface,
   ): Promise<ClientResponseInterface> {
     try {

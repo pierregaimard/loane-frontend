@@ -25,7 +25,7 @@ export class AxiosClientAdapter implements ClientInterface {
 
   public async post(
     url: string,
-    data?: Record<string, unknown>,
+    data?: any,
     options?: ClientRequestOptionsInterface,
   ): Promise<ClientResponseInterface> {
     return await this._request('post', url, options, data)
@@ -33,7 +33,7 @@ export class AxiosClientAdapter implements ClientInterface {
 
   public async put(
     url: string,
-    data?: Record<string, unknown>,
+    data?: any,
     options?: ClientRequestOptionsInterface,
   ): Promise<ClientResponseInterface> {
     return await this._request('put', url, options, data)
@@ -41,7 +41,7 @@ export class AxiosClientAdapter implements ClientInterface {
 
   public async patch(
     url: string,
-    data?: Record<string, unknown>,
+    data?: any,
     options?: ClientRequestOptionsInterface,
   ): Promise<ClientResponseInterface> {
     return await this._request('patch', url, options, data)
@@ -62,7 +62,7 @@ export class AxiosClientAdapter implements ClientInterface {
     method: Method,
     url: string,
     options?: ClientRequestOptionsInterface,
-    data?: Record<string, unknown>,
+    data?: any,
   ) {
     try {
       const axiosResponse = await this.axios.request({
