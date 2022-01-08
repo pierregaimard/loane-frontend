@@ -6,6 +6,8 @@ import Home from '../views/Home.vue'
 import Login from '@/views/security/Login.vue'
 import SignIn from '@/views/security/SignIn.vue'
 import Articles from '@/views/articles/Articles.vue'
+import ArticlesEdit from '@/views/articles/ArticlesEdit.vue'
+import { ClientUnauthorizedResponse } from '@/services/api/response/ClientUnauthorizedResponse'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -29,16 +31,10 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Main',
     component: Main,
     children: [
-      {
-        path: 'home',
-        name: 'Home',
-        component: Home,
-      },
-      {
-        path: 'articles',
-        name: 'Articles',
-        component: Articles,
-      },
+      { path: 'home', name: 'Home', component: Home },
+      { path: 'articles', name: 'Articles', component: Articles },
+      { path: 'articles/add', name: 'ArticlesAdd', component: ArticlesEdit },
+      { path: 'articles/update/:id', name: 'ArticleUpdate', component: ArticlesEdit, props: true },
     ],
   },
 ]
@@ -49,13 +45,17 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
-  if (store.getters.hasUserSession) {
-    await store.dispatch('refreshSessionData')
+  if (to.name === 'Login' || to.name === 'SignIn') {
     return
   }
 
-  if (to.name === 'Login' || to.name === 'SignIn') {
-    return
+  if (store.getters.hasUserSession) {
+    try {
+      await store.dispatch('refreshSessionData')
+      return
+    } catch (error) {
+      if (error instanceof ClientUnauthorizedResponse) return { name: 'Login' }
+    }
   }
 
   return { name: 'Login' }
