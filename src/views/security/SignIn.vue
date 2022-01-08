@@ -117,7 +117,6 @@ import { ref } from '@vue/reactivity'
 import { ExclamationIcon } from '@heroicons/vue/solid'
 import { defineComponent } from 'vue'
 import { UserManager } from '@/services/api/managers/UserManager'
-import User from '@/services/api/entities/User'
 
 export default defineComponent({
   components: { ExclamationIcon },
@@ -152,6 +151,7 @@ export default defineComponent({
         await UserManager.signIn(values)
         await router.push({ name: 'Login' })
       } catch (err) {
+        // Todo: Redirect user to error page
         errorMessage.value = err.response.data.message
       }
     })
