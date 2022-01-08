@@ -1,6 +1,6 @@
 import ArticleCategory from '@/services/api/entities/ArticleCategory'
 
-export default interface Article {
+export interface Article {
   id: number,
   code: string,
   name: string,
