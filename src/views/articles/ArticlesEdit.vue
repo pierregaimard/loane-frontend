@@ -11,7 +11,7 @@
       "
     >
       <h1 class="h1 text-2xl text-white mb-8 text-center">
-        J'ajoute un article
+        {{ title }}
       </h1>
 
       <p
@@ -59,6 +59,7 @@
           class="w-full"
           type="number"
           step="0.01"
+          lang="en-US"
           :label-attrs="{ class: 'text-pink-600 pl-3' }"
           :block-attrs="{ class: 'text-left mb-5' }"
         />
@@ -88,7 +89,7 @@
             ease-in-out
           "
         >
-          J'enregistre mon nouvel article
+          {{ submitLabel }}
         </button>
       </form>
     </section>
@@ -109,31 +110,56 @@
   </main>
 </template>
 
-<script>
-import { defineComponent, onBeforeMount, ref } from 'vue'
-import { useRouter } from 'vue-router'
+<script lang="ts">
+import { defineComponent, onBeforeMount, ref, PropType, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { object, string, number } from 'yup'
 import { useField, useForm } from 'vee-validate'
 import { ArticleManager } from '@/services/api/managers/ArticleManager'
+import { Article } from '@/services/api/entities/article'
 import { ExclamationIcon } from '@heroicons/vue/solid'
-import AppSelect from '@/components/form/AppSelect'
 import { ArticleCategoryManager } from '@/services/api/managers/ArticleCategoryManager'
+import { AppSelectOption } from '@/interfaces/AppSelectOption'
 
 export default defineComponent({
-  components: { AppSelect, ExclamationIcon },
+  components: { ExclamationIcon },
+  props: {
+    article: {
+      type: Object as PropType<Article>,
+      default: null,
+    },
+  },
   setup() {
     const router = useRouter()
+    const route = useRoute()
     const errorMessage = ref('')
-    const categories = ref([])
+    const categories = ref<AppSelectOption[]>([])
+    const title = ref('J\'ajoute un article')
+    const submitLabel = ref('J\'enregistre mon nouvel article')
+    const isUpdateRoute = route.name === 'ArticleUpdate'
 
     onBeforeMount(async () => {
       const articleCategories = await ArticleCategoryManager.find()
+      const formattedCategories: AppSelectOption[] = []
       articleCategories.forEach((category) => {
-        categories.value.push({
+        formattedCategories.push({
           value: category.id,
           label: category.label,
         })
       })
+      categories.value = formattedCategories
+
+      if (isUpdateRoute) {
+        const article = await ArticleManager.findOne(Number(route.params.id))
+        title.value = 'Je modifie mon article'
+        submitLabel.value = 'J\'enregistre mes modifications'
+
+        id.value = article.id
+        code.value = article.code
+        name.value = article.name
+        price.value = article.price
+        category.value = article.category.id
+      }
     })
 
     const validationSchema = object({
@@ -142,8 +168,9 @@ export default defineComponent({
         .matches(
           /^[a-zA-Z0-9]+([-_]?[a-zA-Z0-9])*$/,
           'Oups! uniquement des lettres, des chiffres et des tirets. ex: 22-3524aBCt ',
-        ),
-      name: string().required('Oups! tu as oublié le nom'),
+        )
+        .min(2),
+      name: string().required('Oups! tu as oublié le nom').min(3),
       price: number().required('Oups! tu as oublié le prix').positive(),
       category: number().required('Oups! tu as oublié la categorie'),
     })
@@ -154,13 +181,16 @@ export default defineComponent({
 
     const submit = handleSubmit(async function (values) {
       try {
-        await ArticleManager.create(values)
+        (isUpdateRoute)
+          ? await ArticleManager.update(values)
+          : await ArticleManager.create(values)
         await router.push({ name: 'Articles' })
       } catch (err) {
         errorMessage.value = err.response.data.message
       }
     })
 
+    const { value: id } = useField('id')
     const { value: code } = useField('code')
     const { value: name } = useField('name')
     const { value: price } = useField('price')
@@ -168,6 +198,7 @@ export default defineComponent({
 
     return {
       categories,
+      id,
       code,
       name,
       price,
@@ -175,11 +206,9 @@ export default defineComponent({
       errors,
       errorMessage,
       submit,
+      title,
+      submitLabel,
     }
   },
 })
 </script>
-
-<style scoped>
-
-</style>
