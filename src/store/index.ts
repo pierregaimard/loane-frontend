@@ -1,12 +1,17 @@
-import User from '@/api/entities/User'
+import User from '@/services/api/entities/User'
 import { createStore, Store } from 'vuex'
-import { session, SESSION_USER, SESSION_TOKEN } from '@/services/session/Session'
+import { session, SESSION_USER } from '@/services/session/Session'
 import { State } from '@vue/runtime-core'
-import { Http } from '@/api/connector/Http'
+import { Article } from '@/services/api/entities/Article'
+import { UserManager } from '@/services/api/managers/UserManager'
+import { UserSession } from '@/services/security/UserSession'
+import { ArticleManager } from '@/services/api/managers/ArticleManager'
+import { Http } from '@/services/api/client/Http'
 
 declare module '@vue/runtime-core' {
   interface State {
     user: User | null
+    articles: Article[]
   }
 
   interface ComponentCustomProperties {
@@ -18,6 +23,7 @@ export default createStore({
   state(): State {
     return <State>{
       user: null,
+      articles: [],
     }
   },
   getters: {
@@ -35,27 +41,31 @@ export default createStore({
     setUser(state, payload) {
       state.user = payload.user
     },
+    setArticles(state, payload) {
+      state.articles = payload.articles
+    },
   },
   actions: {
     async authenticate({ commit }, payload) {
-      const response = await Http.getClient().post('auth/login', {
-        username: payload.username,
-        password: payload.password,
-      })
-
-      commit({ type: 'setUser', user: response.data.user })
-      session.set(SESSION_USER, response.data.user.id)
-      session.set(SESSION_TOKEN, response.data.token)
-      Http.setJwt(response.data.token)
+      const { user, token } = await UserManager.login(payload.username, payload.password)
+      commit({ type: 'setUser', user: user })
+      UserSession.set(user.id, token)
+      Http.setJwt(token)
     },
 
     async refreshSessionData({ commit }) {
-      const token = session.get(SESSION_TOKEN)
-      if (token !== null) Http.setJwt(token)
+      const userSession = UserSession.get()
+      if (userSession === false) return Promise.reject(Error('User session is missing'))
+      Http.setJwt(userSession.token)
+      const user = await UserManager.findOne(userSession.userId)
+      commit({ type: 'setUser', user: user })
+    },
 
-      const userId = session.get(SESSION_USER)
-      const response = await Http.getClient().get(`users/${userId}`)
-      commit({ type: 'setUser', user: response.data })
+    async setArticles({ commit }, payload?) {
+      const articles = (payload)
+        ? await ArticleManager.findByCategory(payload.category)
+        : await ArticleManager.find()
+      commit({ type: 'setArticles', articles: articles })
     },
   },
   modules: {},
