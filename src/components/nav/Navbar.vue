@@ -6,6 +6,7 @@
       fixed
       top-0
       bg-white
+      z-10
     "
   >
     <div
