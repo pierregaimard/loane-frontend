@@ -113,6 +113,7 @@ import { useStore } from 'vuex'
 import { ref } from '@vue/reactivity'
 import { ExclamationIcon } from '@heroicons/vue/solid'
 import { defineComponent } from 'vue'
+import { ClientUnauthorizedResponse } from '@/services/api/response/ClientUnauthorizedResponse'
 
 export default defineComponent({
   components: { ExclamationIcon },
@@ -137,8 +138,12 @@ export default defineComponent({
       try {
         await store.dispatch('authenticate', values)
         await router.push({ name: 'Home' })
-      } catch (err) {
-        errorMessage.value = err.response.data.message
+      } catch (error) {
+        if (error instanceof ClientUnauthorizedResponse) {
+          errorMessage.value = error.data.message
+        }
+        // Todo: redirect user to error view
+        console.log(error)
       }
     })
 
