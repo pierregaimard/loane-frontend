@@ -1,5 +1,16 @@
-import Article from '@/services/api/entities/Article'
+import { Article } from '@/services/api/entities/Article'
 import { Http } from '@/services/api/client/Http'
+
+const getFormattedArticleData = (formData: Record<any, any>) => {
+  return <Article> {
+    code: formData.code,
+    name: formData.name,
+    price: Number(String(formData.price).replace(',', '.')),
+    category: {
+      id: formData.category,
+    },
+  }
+}
 
 export const ArticleManager = {
   find: async (): Promise<Article[]> => {
@@ -18,16 +29,16 @@ export const ArticleManager = {
   },
 
   create: async (articleData: Record<any, any>): Promise<Article> => {
-    const formattedData = <Article> {
-      code: articleData.code,
-      name: articleData.name,
-      price: articleData.price,
-      category: {
-        id: articleData.category,
-      },
-    }
-
-    const { data } = await Http.post('articles', formattedData)
+    const { data } = await Http.post('articles', getFormattedArticleData(articleData))
     return data
+  },
+
+  update: async (articleData: Record<any, any>): Promise<Article> => {
+    const { data } = await Http.put(`articles/${articleData.id}`, getFormattedArticleData(articleData))
+    return data
+  },
+
+  delete: async (id: number): Promise<any> => {
+    await Http.delete(`articles/${id}`)
   },
 }
