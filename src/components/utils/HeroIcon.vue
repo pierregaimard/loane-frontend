@@ -5,7 +5,7 @@
   />
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue'
 import { GiftIcon, DesktopComputerIcon } from '@heroicons/vue/outline'
 
