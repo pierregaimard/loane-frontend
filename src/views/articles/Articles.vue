@@ -54,7 +54,7 @@
       </div>
       <div>
         <router-link
-          :to="{ name: 'Articles' }"
+          :to="{ name: 'ArticleUpdate', params: { id: article.id } }"
           class="
             mr-4 px-3 py-1
             bg-pink-300 hover:bg-pink-400
@@ -67,8 +67,7 @@
           Modifier
         </router-link>
 
-        <router-link
-          :to="{ name: 'Articles' }"
+        <button
           class="
             px-3 py-1
             bg-pink-300 hover:bg-pink-400
@@ -77,31 +76,46 @@
             font-bold
             text-white
           "
+          @click="displayArticleDelete(article.id)"
         >
           Supprimer
-        </router-link>
+        </button>
       </div>
     </div>
+    <ArticleDelete
+      v-show="deleteArticleVisibility"
+      :article-id="deleteArticleId"
+      @close-window="deleteArticleVisibility = false"
+    />
   </main>
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeMount } from 'vue'
+import { defineComponent, onBeforeMount, ref } from 'vue'
 import { PlusCircleIcon } from '@heroicons/vue/outline'
 import { useStore } from 'vuex'
 import HeroIcon from '@/components/utils/HeroIcon.vue'
+import ArticleDelete from '@/components/article/ArticleDelete.vue'
 
 export default defineComponent({
   components: {
-    HeroIcon: HeroIcon,
+    HeroIcon,
+    ArticleDelete,
     PlusCircleIcon,
   },
   setup() {
     const store = useStore()
+    const deleteArticleVisibility = ref(false)
+    const deleteArticleId = ref<number | null>(null)
 
     onBeforeMount(() => {
       store.dispatch('setArticles', { category: null })
     })
+
+    return {
+      deleteArticleVisibility,
+      deleteArticleId,
+    }
   },
   methods: {
     articleBoxColor(color: string) {
@@ -109,6 +123,10 @@ export default defineComponent({
     },
     articleBackgroundColor(color: string) {
       return `bg-${color}`
+    },
+    displayArticleDelete(id: number) {
+      this.deleteArticleId = id
+      this.deleteArticleVisibility = true
     },
   },
 })
